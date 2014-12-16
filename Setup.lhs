@@ -8,6 +8,7 @@ import Distribution.Version
 
 import Distribution.Simple.LocalBuildInfo
 import Distribution.Simple.Program
+import Distribution.Simple.Program.Find
 import Distribution.Verbosity
 
 import Data.Char (isSpace)
@@ -19,12 +20,12 @@ main = defaultMainWithHooks simpleUserHooks {
   hookedPrograms = [mysqlConfigProgram],
 
   confHook = \pkg flags -> do
-    lbi <- confHook simpleUserHooks pkg flags
-    bi  <- mysqlBuildInfo lbi
-    return lbi {
-      localPkgDescr = updatePackageDescription
-                        (Just bi, []) (localPkgDescr lbi)
-    }
+               confHook simpleUserHooks pkg flags
+    -- bi  <- mysqlBuildInfo lbi
+    -- return lbi {
+    --   localPkgDescr = updatePackageDescription
+    --                     (Just bi, []) (localPkgDescr lbi)
+    --}
 }
 
  
@@ -45,8 +46,8 @@ instance ConstOrId a (b -> a) where
 
 mysqlConfigProgram = (simpleProgram "mysql_config") {
     programFindLocation = \verbosity -> constOrId $ do
-      mysql_config  <- findProgramOnPath "mysql_config"  verbosity
-      mysql_config5 <- findProgramOnPath "mysql_config5" verbosity
+      mysql_config  <- findProgramOnSearchPath verbosity defaultProgramSearchPath "mysql_config"
+      mysql_config5 <- findProgramOnSearchPath verbosity defaultProgramSearchPath "mysql_config5"
       return (mysql_config `mplus` mysql_config5)
   }
 

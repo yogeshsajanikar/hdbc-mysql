@@ -32,6 +32,8 @@ library
     time,
     utf8-string
   ghc-options:      -Wall
+  if os(windows)
+    extra-libraries: mysql
 
 source-repository head
   type:     git

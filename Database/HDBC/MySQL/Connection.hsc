@@ -23,6 +23,10 @@ import qualified Database.HDBC.Types as Types
 import Database.HDBC.ColTypes as ColTypes
 import Database.HDBC (throwSqlError)
 
+#ifdef _WIN32
+#include <winsock.h>
+#endif
+
 #include <mysql.h>
 
 {- | Connection information to use with connectMySQL.
